@@ -530,3 +530,64 @@ def evaluate(program_path: str) -> EvaluationResult:
     """
     evaluator = ContinuousBestMatchingEvaluator()
     return evaluator.evaluate(program_path)
+
+
+def evaluate_stage1(program_path: str) -> EvaluationResult:
+    """
+    Stage 1 cascade evaluation - quick validation with simple test cases.
+
+    Args:
+        program_path: Path to the program file
+
+    Returns:
+        EvaluationResult with basic metrics for cascade filtering
+    """
+    evaluator = ContinuousBestMatchingEvaluator()
+
+    try:
+        program = evaluator._load_program(program_path)
+    except Exception as e:
+        return EvaluationResult(
+            metrics={"combined_score": 0.0, "stage1_passed": 0.0},
+            artifacts={"error": str(e)}
+        )
+
+    if not hasattr(program, 'solve'):
+        return EvaluationResult(
+            metrics={"combined_score": 0.0, "stage1_passed": 0.0},
+            artifacts={"error": "Missing solve function"}
+        )
+
+    # Get 5 simplest test cases
+    sorted_testcases = sorted(
+        evaluator.testcases,
+        key=lambda t: t['input']['n'] * t['input']['m']
+    )
+    stage1_cases = sorted_testcases[:5]
+
+    passed = 0
+    for testcase in stage1_cases:
+        result = evaluator._run_single_test(program, testcase, measure_perf=False)
+        if result['passed']:
+            passed += 1
+
+    pass_rate = passed / len(stage1_cases) if stage1_cases else 0
+
+    # Return low score if stage 1 fails
+    if pass_rate < evaluator.cascade_thresholds[0]:
+        return EvaluationResult(
+            metrics={
+                "combined_score": pass_rate * 0.3,
+                "stage1_passed": pass_rate,
+            },
+            artifacts={"stage": "stage1_failed", "passed": passed, "total": len(stage1_cases)}
+        )
+
+    # Stage 1 passed - return high score to proceed to next stage
+    return EvaluationResult(
+        metrics={
+            "combined_score": 0.8 + pass_rate * 0.2,  # High score (0.8-1.0) to proceed
+            "stage1_passed": pass_rate,
+        },
+        artifacts={"stage": "stage1_passed", "passed": passed, "total": len(stage1_cases)}
+    )
