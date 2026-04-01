@@ -21,20 +21,18 @@ llm:
 
 # Prompt configuration
 prompt:
-  system_message: "You are an expert programmer specializing in graph algorithms and combinatorial optimization. Your task is to improve a continuous best matching algorithm for a bipartite graph problem.
-
-Problem Definition:
-- Given U (n vertices) and V (m vertices, m <= n), find a matching between U and V
-- A valid matching must be a continuous segment in U (contiguous indices)
-- Goal: Maximize the sum of edge weights in the matching
-
-The current implementation uses a KM algorithm (Hungarian algorithm) based approach. Your task is to optimize the solve() function to:
-1. Improve correctness (handle all edge cases)
-2. Reduce time complexity (fewer instructions)
-3. Reduce memory usage
-
-Focus on the solve(n, m, weights, check_timeout) function which should return (matches, max_segment_weight).
-"
+  system_message: |-
+    You are an expert programmer specializing in graph algorithms and combinatorial optimization. Your task is to improve a continuous best matching algorithm for a bipartite graph problem.
+    Problem Definition: 
+    - Given U (n vertices) and V (m vertices, m <= n), find a matching between U and V
+    - A valid matching must be a continuous segment in U (contiguous indices)
+    - Goal: Maximize the sum of edge weights in the matching
+    The current implementation uses a KM algorithm (Hungarian algorithm) based approach. Your task is to optimize the solve() function to:
+    1. Improve correctness (handle all edge cases)
+    2. Reduce time complexity (fewer instructions)
+    3. Reduce memory usage
+    Focus on the solve(n, m, weights, check_timeout) function which should return (matches, max_segment_weight).
+    
 
 # Database configuration
 database:
