@@ -48,7 +48,9 @@ database:
 # Evaluator configuration
 evaluator:
   timeout: 30
-  cascade_thresholds: [0.70, 0.85]
+  # Cascade evaluation
+  cascade_evaluation: false
+  cascade_thresholds: []
   parallel_evaluations: 4
 
 # Evolution settings
