@@ -485,9 +485,3 @@ def evaluate_stage1(program_path):
             },
             artifacts=error_artifacts
         )
-
-
-def evaluate_stage2(program_path):
-    """Second stage evaluation with more thorough testing"""
-    # Full evaluation as in the main evaluate function
-    return evaluate(program_path)
